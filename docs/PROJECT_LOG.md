@@ -14,6 +14,7 @@
 
 - Revenue selected as preliminary target variable.
 - Docker included in project scope.
+- Working agreements formally documented.
 
 #### Next Milestone
 
