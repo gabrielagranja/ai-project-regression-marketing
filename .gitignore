@@ -1,7 +1,12 @@
 # Datasets
 data/*.csv
 data/*.xlsx
+data/*.zip
 data/*.parquet
+
+# Keep documentation
+!data/README.md
+!data/README_DATASET.md
 
 # Models
 models/*.pkl
