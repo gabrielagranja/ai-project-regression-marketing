@@ -170,3 +170,14 @@ Objectives:
 ### Development Workflow
 
 Business Understanding → Dataset Assessment → EDA → Feature Engineering → Modeling → Application → Deployment.
+
+
+### 2026-06-25
+
+**Business Scope Update**
+
+The project objective was redefined.
+
+Instead of predicting campaign revenue using post-campaign performance metrics, the project will focus on forecasting campaign revenue before launch using only planning-time variables.
+
+See JUN-25-business-problem-definition
