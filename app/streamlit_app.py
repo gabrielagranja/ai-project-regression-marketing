@@ -24,7 +24,7 @@ DEFAULT_INPUTS = {
     "season": "Summer",
     "is_holiday": False,
     "is_weekend": False,
-    "country": "KSA",
+    "country": "Spain",
     "market_tier": "Tier 1",
     "account": "Ecom_FashionCo",
     "account_type": "Brand",
@@ -40,18 +40,18 @@ FALLBACK_OPTIONS = {
     "day_of_week": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     "season": ["Winter", "Spring", "Summer", "Fall"],
     "country": [
-        "KSA",
-        "United Arab Emirates",
-        "Qatar",
-        "Kuwait",
-        "Bahrain",
-        "Oman",
-        "Egypt",
-        "Jordan",
-        "Lebanon",
-        "Morocco",
-        "Iraq",
-        "Yemen",
+       "Spain",
+        "Portugal",
+        "France",
+        "Italy",
+        "Germany",
+        "Netherlands",
+        "Belgium",
+        "United Kingdom",
+        "Ireland",
+        "Switzerland",
+        "United States",
+        "Canada",
     ],
     "market_tier": ["Tier 1", "Tier 2", "Tier 3"],
     "account": [
@@ -103,18 +103,24 @@ FALLBACK_OPTIONS = {
 @st.cache_data(show_spinner=False)
 def load_planning_options() -> dict[str, list[str]]:
     """Load categorical choices from the local dataset when it is available."""
+
+    if not USE_DATASET_OPTIONS:
+        return FALLBACK_OPTIONS
+
     if not RAW_DATA_PATH.exists():
         return FALLBACK_OPTIONS
 
     data = pd.read_csv(RAW_DATA_PATH, usecols=PLANNING_TIME_FEATURES)
+
     options = FALLBACK_OPTIONS.copy()
 
     for feature in FALLBACK_OPTIONS:
+        
         if feature in data.columns:
             values = data[feature].dropna().astype(str).sort_values().unique().tolist()
             if values:
                 options[feature] = values
-
+    USE_DATASET_OPTIONS = False    
     return options
 
 
@@ -165,152 +171,160 @@ def validate_campaign_inputs(inputs: dict[str, object]) -> list[str]:
 
 
 st.set_page_config(
-    page_title="Campaign Revenue Forecaster",
+    page_title="Predictor Inteligente de Campañas de Marketing",
     layout="centered",
 )
 
+st.markdown(
+    """
+    Complete los datos principales de la campaña y pulse **Calcular predicción**.
+
+    La predicción debe interpretarse como una estimación orientativa para apoyar la toma
+    de decisiones, no como un resultado garantizado.
+    """
+)
 options = load_planning_options()
 initialize_form_state(options)
 
-st.title("Revenue Forecast")
-st.caption("Plan a campaign and estimate expected revenue before launch.")
+st.title("Predictor Inteligente de Campañas de Marketing")
+st.caption("Herramienta de apoyo para estimar los ingresos potenciales de una campaña antes de invertir presupuesto publicitario.")
 
 header_left, header_right = st.columns([3, 1])
 with header_left:
-    st.write("Enter the campaign setup below, then generate a forecast.")
+    st.write("Complete la confirguración de la campaña a continuación y luego genere una pronóstico de ingresos antes del lanzamiento.")
 with header_right:
-    if st.button("Reset form", use_container_width=True):
+    if st.button("Reestablecer formulario", use_container_width=True):
         reset_form(options)
         st.rerun()
 
 st.divider()
 
 with st.form("campaign_forecast_form"):
-    st.subheader("Campaign details")
+    st.subheader("Configuración de la campaña")
 
     left_col, right_col = st.columns(2, gap="large")
 
     with left_col:
-        st.markdown("#### Timing")
+        st.markdown("#### Calendario")
         st.slider(
-            "Month",
+            "Mes",
             min_value=1,
             max_value=12,
             step=1,
             key="month",
-            help="Calendar month planned for the campaign launch.",
+            help="Mes previsto de la campaña.",
         )
         st.slider(
-            "Week",
+            "Semana",
             min_value=1,
             max_value=53,
             step=1,
             key="week",
-            help="Calendar week planned for the campaign launch.",
+            help="Semana del calendario planificada para el lanzamiento de la campaña.",
         )
         st.selectbox(
-            "Day of week",
+            "Día de la semana",
             options["day_of_week"],
             key="day_of_week",
-            help="Planned day for the campaign post or launch.",
+            help="Día planificado para la publicación o lanzamiento de la campaña.",
         )
         st.slider(
-            "Post hour",
+            "Hora de publicación",
             min_value=0,
             max_value=23,
             step=1,
             key="post_hour",
-            help="Hour of day in 24-hour format.",
+            help="Hora del día en formato de 24 horas.",
         )
         st.selectbox(
-            "Season",
+            "Estación",
             options["season"],
             key="season",
-            help="Season associated with the planned launch date.",
+            help="Estación asociada con la fecha de lanzamiento planificada.",
         )
 
         st.markdown("#### Budget")
         st.number_input(
-            "Planned spend",
+            "Gasto planificado",
             min_value=0.0,
             step=100.0,
             format="%.2f",
             key="spend",
-            help="Planned media spend for the campaign.",
+            help="Gasto planificado en medios para la campaña.",
         )
 
     with right_col:
-        st.markdown("#### Market")
+        st.markdown("#### Mercado y cuenta")
         st.selectbox(
-            "Country",
+            "País",
             options["country"],
             key="country",
-            help="Primary market for the campaign.",
+            help="Mercado principal para la campaña.",
         )
         st.selectbox(
-            "Market tier",
+            "Nivel de mercado",
             options["market_tier"],
             key="market_tier",
-            help="Market priority tier used during planning.",
+            help="Nivel de prioridad del mercado utilizado durante la planificación.",
         )
         st.selectbox(
-            "Account",
+            "Cuenta",
             options["account"],
             key="account",
-            help="Account or client profile for the campaign.",
+            help="Cuenta o perfil de cliente para la campaña.",
         )
         st.selectbox(
-            "Account type",
+            "Tipo de cuenta",
             options["account_type"],
             key="account_type",
-            help="Type of account running the campaign.",
+            help="Tipo de cuenta que ejecuta la campaña.",
         )
 
-        st.markdown("#### Channel and strategy")
+        st.markdown("#### Canal y creatividad")
         st.selectbox(
-            "Platform",
+            "Plataforma digital",
             options["platform"],
             key="platform",
-            help="Digital platform selected for the campaign.",
+            help="Plataforma digital seleccionada para la campaña.",
         )
         st.selectbox(
-            "Placement",
+            "Ubicación del anuncio",
             options["placement"],
             key="placement",
-            help="Ad placement or inventory type.",
+            help="Ubicación del anuncio o tipo de inventario.",
         )
         st.selectbox(
-            "Funnel stage",
+            "Etapa del embudo",
             options["funnel_stage"],
             key="funnel_stage",
-            help="Marketing funnel stage targeted by the campaign.",
+            help="Etapa del embudo de marketing apuntada por la campaña.",
         )
         st.selectbox(
-            "Objective",
+            "Objetivo",
             options["objective"],
             key="objective",
-            help="Primary campaign objective.",
+            help="Objetivo principal de la campaña.",
         )
         st.selectbox(
-            "Theme",
+            "Creatividad o tema del mensaje",
             options["theme"],
             key="theme",
-            help="Creative or messaging theme.",
+            help="Tema creativo o de mensaje.",
         )
 
-    st.markdown("#### Calendar flags")
+    st.markdown("#### Consideraciones de tiempo")
     flag_col_1, flag_col_2 = st.columns(2)
     with flag_col_1:
         st.checkbox(
-            "Holiday",
+            "Fiesta",
             key="is_holiday",
-            help="Select if the campaign launches on or around a holiday.",
+            help="Seleccionar si la campaña se lanza en o alrededor de un feriado.",
         )
     with flag_col_2:
         st.checkbox(
-            "Weekend",
+            "Fin de semana",
             key="is_weekend",
-            help="Select if the campaign launches on a weekend.",
+            help="Seleccionar si la campaña se lanza en un fin de semana.",
         )
 
     submitted = st.form_submit_button("Predict Revenue", type="primary")
@@ -350,17 +364,17 @@ if submitted:
             st.session_state.pop("latest_prediction", None)
             st.session_state.pop("latest_input_dataframe", None)
             st.error(
-                "The forecast model is not available yet. "
-                "Train or add the saved model first."
+                "El modelo de pronóstico no está disponible aún. "
+                "Entrena o agrega el modelo guardado primero."
             )
         except ValueError as error:
             st.session_state.pop("latest_prediction", None)
             st.session_state.pop("latest_input_dataframe", None)
-            st.error(f"Please review the campaign inputs. {error}")
+            st.error(f"Por favor, revise los inputs de la campaña. {error}")
         except Exception as error:
             st.session_state.pop("latest_prediction", None)
             st.session_state.pop("latest_input_dataframe", None)
-            st.error(f"Forecast could not be generated. Details: {error}")
+            st.error(f"No se pudo generar el pronóstico. Detalles: {error}")
         else:
             st.session_state["latest_prediction"] = prediction
             st.session_state["latest_input_dataframe"] = input_dataframe
@@ -374,20 +388,72 @@ if "latest_prediction" in st.session_state:
     with metric_col:
         with st.container(border=True):
             st.metric(
-                "Predicted revenue",
+                "Ingresos pronosticados",
                 f"${st.session_state['latest_prediction']:,.2f}",
             )
     with note_col:
         with st.container(border=True):
             st.metric(
-                "Planned spend",
+                "Gasto planeado",
                 f"${st.session_state['latest_input_dataframe']['spend'].iloc[0]:,.2f}",
             )
             st.caption("Use the forecast to compare campaign plans before launch.")
+    with st.expander("Resumen de la campaña", expanded=False):
 
-    with st.expander("Debug information", expanded=False):
-        st.dataframe(
-            st.session_state["latest_input_dataframe"],
-            hide_index=True,
-            use_container_width=True,
-        )
+        datos = st.session_state["latest_input_dataframe"].iloc[0]
+
+    st.markdown("### Calendario")
+    st.write(f"Mes: {datos['month']}")
+    st.write(f"Semana: {datos['week']}")
+    st.write(f"Día: {datos['day_of_week']}")
+    st.write(f"Hora de publicación: {datos['post_hour']}:00")
+
+    st.markdown("### Mercado")
+    st.write(f"País: {datos['country']}")
+    st.write(f"Nivel de mercado: {datos['market_tier']}")
+
+    st.markdown("### Campaña")
+    st.write(f"Cuenta: {datos['account']}")
+    st.write(f"Tipo de cuenta: {datos['account_type']}")
+    st.write(f"Plataforma: {datos['platform']}")
+    st.write(f"Ubicación: {datos['placement']}")
+
+    st.markdown("### Estrategia")
+    st.write(f"Objetivo: {datos['objective']}")
+    st.write(f"Embudo: {datos['funnel_stage']}")
+    st.write(f"Tema: {datos['theme']}")
+
+    st.markdown("### Presupuesto")
+    st.write(f"Inversión prevista: ${datos['spend']:,.2f}")
+
+    st.markdown("### Condiciones")
+    st.write(f"Festivo: {'Sí' if datos['is_holiday'] else 'No'}")
+    st.write(f"Fin de semana: {'Sí' if datos['is_weekend'] else 'No'}")
+
+    st.divider()
+
+st.divider()
+
+st.subheader("Acerca de la aplicación")
+
+st.info(
+    "Esta aplicación corresponde a la versión 1.0 del proyecto. "
+    "Se trata de un Producto Mínimo Viable (MVP) desarrollado para demostrar "
+    "el funcionamiento de un modelo de Machine Learning aplicado a la predicción "
+    "de ingresos en campañas de marketing."
+)
+
+st.markdown("""
+**Roadmap de evolución**
+
+- Historial de predicciones
+- Base de datos
+- Dashboard interactivo
+- Comparación entre campañas
+- Exportación de informes
+- Monitorización del modelo (MLOps)
+""")
+
+st.caption(
+    "Proyecto de Machine Learning Regression | Desarrollado por Gabriela Granja | Bootcamp IA | 2026"
+)
