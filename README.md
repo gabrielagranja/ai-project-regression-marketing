@@ -1,197 +1,245 @@
-# AI Project - Regression Marketing
+# 📈 Marketing Campaign Revenue Predictor
 
-## Predicción de ingresos de campañas de marketing mediante Machine Learning
+Proyecto de **Machine Learning** desarrollado durante el Bootcamp de Inteligencia Artificial cuyo objetivo es predecir los ingresos esperados de campañas de marketing digital mediante técnicas de regresión.
 
-Este proyecto desarrolla un modelo de Machine Learning capaz de **predecir el ingreso esperado (Revenue) de una campaña de marketing antes de su lanzamiento**, utilizando únicamente variables disponibles durante la fase de planificación.
+La solución incluye el ciclo completo de un proyecto de Machine Learning: análisis del dataset, EDA, entrenamiento de modelos, optimización, despliegue mediante Streamlit y dockerización.
 
-El objetivo es proporcionar una herramienta que ayude a equipos de Marketing y Performance a tomar decisiones de inversión antes de ejecutar una campaña.
-
----
-
-# Problema de negocio
-
-Antes de lanzar una campaña publicitaria es habitual preguntarse:
-
-- ¿Cuánto ingreso podría generar?
-- ¿Vale la pena invertir este presupuesto?
-- ¿Qué configuración ofrece mejores resultados?
-
-Este proyecto intenta responder a estas preguntas mediante un modelo predictivo entrenado con datos históricos de campañas.
+**🌐 Demo:** https://ai-project-regression-marketing-nfcaunp8mbcgqybcz3wr74.streamlit.app/
 
 ---
 
-# Objetivos
+# 🎯 Objetivo
 
-- Analizar un dataset de campañas digitales.
-- Realizar un análisis exploratorio de datos (EDA).
-- Construir y comparar modelos de regresión.
-- Optimizar el mejor modelo.
-- Evaluar su capacidad de generalización.
-- Desarrollar una aplicación interactiva para realizar predicciones.
+Desarrollar un modelo capaz de estimar el **Revenue** de una campaña antes de su lanzamiento utilizando información disponible durante la fase de planificación.
+
+Aunque inicialmente el proyecto se planteó como una **Regresión Lineal**, tras comparar diferentes algoritmos de regresión se seleccionó un **Random Forest Regressor optimizado**, al ofrecer un mejor rendimiento predictivo.
 
 ---
 
-# Tecnologías utilizadas
+# 🛠 Tecnologías
 
-- Python
-- Pandas
-- NumPy
-- Scikit-Learn
-- Optuna
-- Streamlit
-- Joblib
-- Matplotlib
-- Git
-- GitHub
+* Python
+* Pandas
+* NumPy
+* Scikit-Learn
+* RandomizedSearchCV
+* Matplotlib
+* Streamlit
+* Joblib
+* Docker
+* Git & GitHub
 
 ---
 
-# Estructura del proyecto
+# 📂 Estructura del proyecto
 
 ```text
 .
 ├── app/
 │   └── streamlit_app.py
-│
 ├── data/
-│
+│   ├── digital_marketing_dataset_30k.csv
+│   ├── data_dictionary.csv
+│   └── README_DATASET.md
 ├── docs/
-│
-├── images/
-│
 ├── models/
 │   └── campaign_revenue_forecast_model.joblib
-│
 ├── notebooks/
-│   ├── 01_dataset_assessment.ipynb
-│   ├── 02_exploratory_data_analysis.ipynb
-│   └── 03_modeling.ipynb
-│
 ├── src/
-│   ├── config.py
-│   ├── data_loader.py
-│   ├── preprocessing.py
-│   ├── model.py
-│   ├── prediction.py
-│   ├── evaluation.py
-│   ├── train.py
-│   └── features.py
-│
 ├── tests/
-│
-├── README.md
-└── requirements.txt
+├── Dockerfile
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-# Flujo del proyecto
+# 🤖 Modelo desarrollado
 
-- Dataset Assessment
-- Exploratory Data Analysis (EDA)
-- Feature Engineering
-- Comparación de modelos
-- Optimización mediante Optuna
-- Selección del modelo final
-- Evaluación de métricas
-- Análisis de Overfitting
-- Persistencia del modelo
-- Aplicación Streamlit
+El flujo completo del modelo incluye:
 
----
+* Limpieza y preparación de datos.
+* Imputación de valores faltantes.
+* Escalado de variables numéricas.
+* Codificación One-Hot de variables categóricas.
+* Pipeline de Scikit-Learn.
+* Entrenamiento de modelos de regresión.
+* Optimización mediante **RandomizedSearchCV**.
+* Exportación del modelo entrenado mediante Joblib.
 
-# Modelo seleccionado
+Modelo final:
 
-El modelo final es un:
-
-**Random Forest Regressor**
-
-optimizado mediante búsqueda de hiperparámetros y serializado utilizando Joblib para su posterior reutilización.
+**Optimized Random Forest Regressor**
 
 ---
 
-# Resultados obtenidos
+# 📊 Resultados
 
-| Métrica | Resultado |
-|----------|-----------|
-| R² | 0.71 |
-| RMSE | 1614.45 |
-| MAE | 267.48 |
-| Overfitting Gap | ~10 % |
+## Métricas de evaluación
 
-Estos resultados indican que el modelo es capaz de explicar aproximadamente el **71 % de la variabilidad del Revenue** utilizando únicamente información disponible antes del lanzamiento de la campaña.
+| Métrica |      Valor |
+| ------- | ---------: |
+| MAE     |     177.58 |
+| MSE     | 1.35 × 10⁶ |
+| RMSE    |    1160.78 |
+| R²      |      0.850 |
+
+El modelo explica aproximadamente el **85 % de la variabilidad del Revenue**.
 
 ---
 
-# Aplicación Streamlit
+## 📉 Control del overfitting
 
-La aplicación permite introducir los parámetros de planificación de una campaña y obtener una predicción del Revenue esperado.
+| Métrica         |   Valor |
+| --------------- | ------: |
+| Training R²     |  0.9688 |
+| Testing R²      |  0.8483 |
+| Overfitting Gap |  0.1204 |
+| Overfitting (%) | 12.04 % |
 
-## Ejecutar la aplicación
+Durante el proyecto se monitorizó el comportamiento del modelo comparando entrenamiento y prueba para controlar el sobreajuste antes de seleccionar la versión final.
+
+---
+
+## 🔍 Variables más importantes
+
+El análisis de Feature Importance mostró que las variables con mayor influencia sobre la predicción fueron:
+
+1. Número de conversiones
+2. Número de clics
+3. Objetivo: Leads
+4. Objetivo: Sales
+5. Inversión (Spend)
+
+Las diez variables más importantes concentran aproximadamente el **96 % de la importancia acumulada** del modelo.
+
+---
+
+# 🚀 Instalación
+
+Clonar el repositorio:
+
+```bash
+git clone <repository_url>
+cd ai-project-regression-marketing
+```
+
+Crear un entorno virtual:
+
+```bash
+python -m venv .venv
+```
+
+Activar el entorno:
+
+### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Instalar dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# 💾 Archivos necesarios
+
+La aplicación requiere:
+
+```text
+data/digital_marketing_dataset_30k.csv
+
+models/campaign_revenue_forecast_model.joblib
+```
+
+---
+
+# ▶️ Ejecutar la aplicación
 
 ```bash
 streamlit run app/streamlit_app.py
 ```
 
-Una vez iniciada, la aplicación estará disponible en:
+Abrir:
 
-```text
+```
 http://localhost:8501
 ```
 
-Desde la interfaz es posible:
-
-- Configurar los parámetros de una campaña.
-- Introducir el presupuesto previsto.
-- Obtener una estimación del Revenue esperado.
-- Validar automáticamente los datos introducidos.
-
 ---
 
-# Entrenar nuevamente el modelo
+# 🐳 Docker
+
+Construir la imagen:
 
 ```bash
-python -m src.train
+docker build -t marketing-regression-app .
+```
+
+Ejecutar el contenedor:
+
+```bash
+docker run -p 8501:8501 marketing-regression-app
 ```
 
 ---
 
-# Ejecutar los tests
+# ☁️ Despliegue
 
-```bash
-python -m pytest
-```
+El proyecto se encuentra desplegado mediante **Streamlit Community Cloud**.
 
----
-
-# Estado del proyecto
-
-## Completado
-
-- Dataset Assessment
-- Exploratory Data Analysis
-- Ingeniería de características
-- Comparación de modelos
-- Optimización de hiperparámetros
-- Selección del modelo final
-- Evaluación del modelo
-- Persistencia del modelo
-- API de predicción
-- Aplicación Streamlit (MVP)
-
-## Próximas mejoras
-
-- Registro de predicciones
-- Dockerización
-- Despliegue
-- Documentación final
+Además, dispone de una versión completamente **dockerizada**, preparada para su despliegue en cualquier plataforma compatible con Docker.
 
 ---
 
-# Autora
+# 📌 Estado del proyecto
+
+Versión entregada:
+
+**MVP v0.1**
+
+Incluye:
+
+* ✅ Dataset documentado
+* ✅ Exploratory Data Analysis (EDA)
+* ✅ Feature Engineering
+* ✅ Modelado de regresión
+* ✅ Comparación de modelos
+* ✅ Optimización del modelo
+* ✅ Evaluación mediante métricas
+* ✅ Aplicación desarrollada con Streamlit
+* ✅ Dockerización
+* ✅ Despliegue
+* ✅ Documentación
+
+---
+
+# 🔮 Próximas mejoras
+
+* Historial de predicciones.
+* Base de datos.
+* Dashboard interactivo.
+* Exportación de informes.
+* Monitorización del modelo.
+* Reentrenamiento automático.
+* Sistema de autenticación.
+
+---
+
+# 👩‍💻 Autora
 
 **Gabriela Granja**
 
-Bootcamp de Inteligencia Artificial – Factoría F5
+Bootcamp de Inteligencia Artificial
 
-Junio 2026
+2026
