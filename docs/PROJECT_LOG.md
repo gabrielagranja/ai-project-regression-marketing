@@ -61,3 +61,28 @@ Formalize modeling assumptions and begin Exploratory Data Analysis (EDA).
 - Preliminary leakage analysis completed.
 
 Status: Completed
+
+### 2026-06-25
+
+#### Business Scope Update
+
+The project objective was redefined.
+
+Instead of predicting campaign revenue using post-campaign performance metrics, the project will focus on forecasting campaign revenue before launch using only planning-time variables.
+
+This change improves the business relevance of the project because the model will support campaign planning, budget allocation and decision-making before campaign execution.
+
+#### Impact
+
+- The target variable remains `revenue`.
+- Post-campaign performance metrics will be treated as potential data leakage.
+- Feature selection must be reviewed.
+- The Dataset Assessment notebook must be updated.
+- The EDA must focus on planning-time variables and their relationship with revenue.
+
+#### Next Actions
+
+- Update `01_dataset_assessment.ipynb`.
+- Review the Data Leakage section.
+- Create a formal decision record for the new business scope.
+- Define the list of allowed planning-time features.

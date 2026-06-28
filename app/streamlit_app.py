@@ -99,6 +99,7 @@ FALLBACK_OPTIONS = {
     ],
 }
 
+USE_DATASET_OPTIONS = False
 
 @st.cache_data(show_spinner=False)
 def load_planning_options() -> dict[str, list[str]]:
@@ -119,8 +120,7 @@ def load_planning_options() -> dict[str, list[str]]:
         if feature in data.columns:
             values = data[feature].dropna().astype(str).sort_values().unique().tolist()
             if values:
-                options[feature] = values
-    USE_DATASET_OPTIONS = False    
+                options[feature] = values   
     return options
 
 

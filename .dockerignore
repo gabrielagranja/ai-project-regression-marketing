@@ -1,0 +1,29 @@
+# Entorno virtual
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# Cachés de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Cachés de herramientas
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+
+# Archivos de VS Code
+.vscode/
+
+# Logs
+*.log
